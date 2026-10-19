@@ -1,0 +1,31 @@
+flowchart LR
+    Sensor["Сенсор / Emulator"]
+
+    Publisher["MQTT Publisher"]
+    Broker["MQTT Broker"]
+    Consumer["Telemetry Consumer"]
+    Validation["Data Quality<br/>Validation"]
+    State["Twin State Manager"]
+    API["WebSocket API"]
+    UI["Web UI"]
+
+    Repository["Telemetry Repository"]
+    Analyzer["Anomaly Analyzer"]
+
+    Sensor -->|"формування відліку<br/>10 мс"| Publisher
+
+    Publisher -->|"JSON + MQTT publish<br/>20 мс"| Broker
+
+    Broker -->|"доставка MQTT<br/>40 мс"| Consumer
+
+    Consumer -->|"десеріалізація<br/>10 мс"| Validation
+
+    Validation -->|"валідація<br/>10 мс"| State
+
+    State -->|"push update<br/>50 мс"| API
+
+    API -->|"WebSocket + render<br/>70 мс"| UI
+
+    State -.->|"паралельно<br/>запис історії"| Repository
+
+    State -.->|"паралельно<br/>аналіз аномалій"| Analyzer

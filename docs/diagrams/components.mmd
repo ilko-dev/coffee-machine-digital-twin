@@ -1,0 +1,53 @@
+flowchart LR
+    subgraph OME["Фізичний об'єкт"]
+        Sensors["Сенсори"]
+        Actuators["Актуатори / контролер"]
+    end
+
+    subgraph DCE["Data Collection and Device Control"]
+        Publisher["MQTT Publisher"]
+        Consumer["Telemetry Consumer"]
+        Command["Command Service"]
+    end
+
+    Broker["MQTT Broker<br/>Eclipse Mosquitto"]
+
+    subgraph DTE["Digital Twin Platform"]
+        State["Twin State Manager"]
+        Analyzer["Anomaly Analyzer"]
+        Quality["Data Quality Service"]
+        Management["Platform Management"]
+
+        Rest["REST API"]
+        Ws["WebSocket API"]
+
+        Repository["Telemetry Repository"]
+    end
+
+    subgraph UE["User Entity"]
+        UI["Web UI"]
+    end
+
+    Sensors --> Publisher
+    Publisher -->|"MQTT telemetry"| Broker
+    Broker --> Consumer
+
+    Consumer --> Quality
+    Quality --> State
+
+    State --> Analyzer
+    State --> Repository
+
+    State --> Rest
+    State --> Ws
+
+    Rest --> UI
+    Ws --> UI
+
+    UI --> Command
+    Command --> Broker
+    Broker -->|"MQTT commands"| Actuators
+
+    Management -.-> Consumer
+    Management -.-> State
+    Management -.-> Repository

@@ -1,0 +1,44 @@
+flowchart LR
+    subgraph Device["Вузол кавомашини / Edge Device"]
+        Emulator["Coffee Machine<br/>Sensors / Emulator"]
+        Publisher["MQTT Publisher"]
+        Controller["Device Controller"]
+    end
+
+    subgraph BrokerNode["MQTT-вузол"]
+        Mosquitto["Eclipse Mosquitto<br/>MQTT Broker"]
+    end
+
+    subgraph Server["Сервер платформи цифрового двійника"]
+        Consumer["Telemetry Consumer"]
+        State["Twin State Manager"]
+        Analyzer["Anomaly Analyzer"]
+        Api["REST / WebSocket API"]
+        Command["Command Service"]
+    end
+
+    subgraph Storage["Вузол зберігання"]
+        DB["Telemetry Database"]
+    end
+
+    subgraph Client["Клієнтський пристрій"]
+        Browser["Web Browser"]
+    end
+
+    Emulator --> Publisher
+
+    Publisher -->|"MQTT / TCP"| Mosquitto
+    Mosquitto -->|"MQTT / TCP"| Consumer
+
+    Consumer --> State
+    State --> Analyzer
+    State -->|"запис телеметрії"| DB
+
+    State --> Api
+    Api -->|"HTTPS / WebSocket"| Browser
+
+    Browser -->|"команда"| Api
+    Api --> Command
+
+    Command -->|"MQTT"| Mosquitto
+    Mosquitto -->|"MQTT command"| Controller
