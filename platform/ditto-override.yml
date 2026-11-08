@@ -1,0 +1,11 @@
+# Локальне доповнення до upstream Ditto (сам compose Ditto не редагувати)
+services:
+  things:
+    environment:
+      - THINGS_WOT_THING_MODEL_HTTP_SECURITY_ALLOWED_HOSTNAMES=web
+  gateway:
+    ports: !reset []
+  mongodb:
+    ports: !reset []
+  nginx:
+    ports: !override ["127.0.0.1:8080:80"]
