@@ -1,0 +1,74 @@
+@prefix : <http://example.org/coffee-machine#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/coffee-machine> a owl:Ontology ;
+    rdfs:label "Онтологія цифрового двійника кавомашини"@uk .
+
+# Незалежні верхньорівневі класи.
+:Asset a owl:Class ; rdfs:label "Фізичний або функціональний актив"@uk .
+:Sensor a owl:Class ; rdfs:label "Датчик"@uk .
+:ObservableProperty a owl:Class ; rdfs:label "Спостережувана величина"@uk .
+[] a owl:AllDisjointClasses ; owl:members ( :Asset :Sensor :ObservableProperty ) .
+
+:CoffeeMachine a owl:Class ; rdfs:subClassOf :Asset .
+:WaterTank a owl:Class ; rdfs:subClassOf :Asset .
+:Heater a owl:Class ; rdfs:subClassOf :Asset .
+:Pump a owl:Class ; rdfs:subClassOf :Asset .
+:ThermalSubsystem a owl:Class ; rdfs:subClassOf :Asset .
+:HydraulicSubsystem a owl:Class ; rdfs:subClassOf :Asset .
+:OperationSubsystem a owl:Class ; rdfs:subClassOf :Asset .
+:SynchronizationMetadata a owl:Class ; rdfs:label "Метадані синхронізації"@uk .
+
+:TemperatureSensor a owl:Class ; rdfs:subClassOf :Sensor .
+:PressureSensor a owl:Class ; rdfs:subClassOf :Sensor .
+:WaterLevelSensor a owl:Class ; rdfs:subClassOf :Sensor .
+
+:BoilerTemperature a owl:Class ; rdfs:subClassOf :ObservableProperty .
+:WaterPressure a owl:Class ; rdfs:subClassOf :ObservableProperty .
+:FlowRate a owl:Class ; rdfs:subClassOf :ObservableProperty .
+:WaterLevel a owl:Class ; rdfs:subClassOf :ObservableProperty .
+:HeaterPower a owl:Class ; rdfs:subClassOf :ObservableProperty .
+:PumpVibrationRms a owl:Class ; rdfs:subClassOf :ObservableProperty .
+:BrewingActive a owl:Class ; rdfs:subClassOf :ObservableProperty .
+:WaterTankPresent a owl:Class ; rdfs:subClassOf :ObservableProperty .
+
+# Object properties: зв'язки, які має виводити HermiT.
+:hasPart a owl:ObjectProperty, owl:TransitiveProperty ;
+    rdfs:domain :Asset ; rdfs:range :Asset ;
+    owl:inverseOf :partOf .
+:partOf a owl:ObjectProperty ;
+    rdfs:domain :Asset ; rdfs:range :Asset .
+:hasSensor a owl:ObjectProperty ;
+    rdfs:domain :Asset ; rdfs:range :Sensor .
+:observes a owl:ObjectProperty ;
+    rdfs:domain :Sensor ; rdfs:range :ObservableProperty .
+
+# Data properties.
+:serialNo a owl:DatatypeProperty ; rdfs:domain :Asset ; rdfs:range xsd:string .
+:samplingRate a owl:DatatypeProperty ; rdfs:domain :Sensor ; rdfs:range xsd:decimal .
+
+# Екземпляри. Лабораторні ідентифікатори умовні.
+:cm-001 a :CoffeeMachine ;
+    :serialNo "CM-LAB-001" ;
+    :hasPart :water-tank-001, :heater-001, :thermal-001, :hydraulics-001, :operation-001 ;
+    :hasSensor :temperature-sensor-001, :pressure-sensor-001, :waterlevel-sensor-001 .
+:water-tank-001 a :WaterTank .
+:pump-001 a :Pump .
+:heater-001 a :Heater .
+:thermal-001 a :ThermalSubsystem ; :hasPart :heater-001 .
+:hydraulics-001 a :HydraulicSubsystem ; :hasPart :pump-001, :water-tank-001 .
+:operation-001 a :OperationSubsystem .
+
+:boiler-temperature-quantity a :BoilerTemperature .
+:water-pressure-quantity a :WaterPressure .
+:water-level-quantity a :WaterLevel .
+
+:temperature-sensor-001 a :TemperatureSensor ;
+    :samplingRate "1.0"^^xsd:decimal ; :observes :boiler-temperature-quantity .
+:pressure-sensor-001 a :PressureSensor ;
+    :samplingRate "10.0"^^xsd:decimal ; :observes :water-pressure-quantity .
+:waterlevel-sensor-001 a :WaterLevelSensor ;
+    :samplingRate "0.1"^^xsd:decimal ; :observes :water-level-quantity .

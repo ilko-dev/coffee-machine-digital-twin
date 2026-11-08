@@ -1,0 +1,82 @@
+{
+  "@context": [
+    "https://www.w3.org/2022/wot/td/v1.1",
+    {
+      "qudt": "http://qudt.org/vocab/unit/",
+      "coffee": "http://example.org/coffee-machine#"
+    }
+  ],
+  "@type": [
+    "tm:ThingModel",
+    "coffee:CoffeeMachine"
+  ],
+  "title": "Автоматична кавомашина",
+  "version": {
+    "model": "1.0.0"
+  },
+  "links": [
+    {
+      "rel": "tm:submodel",
+      "instanceName": "thermal",
+      "href": "http://web/twin/thermal-1.0.0.tm.jsonld",
+      "type": "application/tm+json"
+    },
+    {
+      "rel": "tm:submodel",
+      "instanceName": "hydraulics",
+      "href": "http://web/twin/hydraulics-1.0.0.tm.jsonld",
+      "type": "application/tm+json"
+    },
+    {
+      "rel": "tm:submodel",
+      "instanceName": "operation",
+      "href": "http://web/twin/operation-1.0.0.tm.jsonld",
+      "type": "application/tm+json"
+    },
+    {
+      "rel": "tm:submodel",
+      "instanceName": "sync",
+      "href": "http://web/twin/sync-1.0.0.tm.jsonld",
+      "type": "application/tm+json"
+    }
+  ],
+  "properties": {
+    "manufacturer": {
+      "title": "Виробник",
+      "type": "string",
+      "readOnly": true
+    },
+    "serialNo": {
+      "title": "Серійний номер",
+      "type": "string",
+      "readOnly": true
+    },
+    "modelName": {
+      "title": "Модель кавомашини",
+      "type": "string",
+      "readOnly": true
+    },
+    "waterTankThingId": {
+      "title": "Ідентифікатор цифрового двійника резервуара",
+      "type": "string",
+      "readOnly": true,
+      "description": "Семантичний зв’язок hasPart із окремим цифровим двійником резервуара"
+    }
+  },
+  "actions": {
+    "start-brewing": {
+      "title": "Розпочати приготування",
+      "input": {
+        "type": "string",
+        "title": "Ідентифікатор оператора"
+      }
+    },
+    "stop-brewing": {
+      "title": "Зупинити приготування",
+      "input": {
+        "type": "string",
+        "title": "Ідентифікатор оператора"
+      }
+    }
+  }
+}

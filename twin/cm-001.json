@@ -1,0 +1,38 @@
+{
+  "definition": "http://web/twin/coffee-machine-1.0.0.tm.jsonld",
+  "policyId": "org.pzks:cm-001",
+  "attributes": {
+    "manufacturer": "Digital Twin Lab (симуляція)",
+    "serialNo": "CM-LAB-001",
+    "modelName": "Espresso Machine Simulator",
+    "waterTankThingId": "org.pzks:water-tank-001"
+  },
+  "features": {
+    "thermal": {
+      "properties": {
+        "temperature": 25.0,
+        "heaterPower": 0.0
+      }
+    },
+    "hydraulics": {
+      "properties": {
+        "pressure": 0.0,
+        "flowRate": 0.0,
+        "waterLevel": 100.0,
+        "pumpVibrationRms": 0.0
+      }
+    },
+    "operation": {
+      "properties": {
+        "brewingActive": false,
+        "waterTankPresent": true
+      }
+    },
+    "sync": {
+      "properties": {
+        "seq": 0,
+        "ts": 0
+      }
+    }
+  }
+}

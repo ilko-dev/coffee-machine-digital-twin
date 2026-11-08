@@ -1,0 +1,37 @@
+{
+  "@context": [
+    "https://www.w3.org/2022/wot/td/v1.1",
+    {
+      "qudt": "http://qudt.org/vocab/unit/",
+      "coffee": "http://example.org/coffee-machine#"
+    }
+  ],
+  "@type": [
+    "tm:ThingModel",
+    "coffee:ThermalSubsystem"
+  ],
+  "title": "Теплова підсистема кавомашини",
+  "version": {
+    "model": "1.0.0"
+  },
+  "properties": {
+    "temperature": {
+      "title": "Температура бойлера",
+      "type": "number",
+      "@type": "coffee:BoilerTemperature",
+      "unit": "qudt:DEG_C",
+      "minimum": 20,
+      "maximum": 100,
+      "observable": true
+    },
+    "heaterPower": {
+      "title": "Потужність нагрівача",
+      "type": "number",
+      "@type": "coffee:HeaterPower",
+      "unit": "qudt:W",
+      "minimum": 0,
+      "maximum": 1500,
+      "observable": true
+    }
+  }
+}

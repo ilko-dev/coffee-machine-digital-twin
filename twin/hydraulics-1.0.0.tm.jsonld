@@ -1,0 +1,55 @@
+{
+  "@context": [
+    "https://www.w3.org/2022/wot/td/v1.1",
+    {
+      "qudt": "http://qudt.org/vocab/unit/",
+      "coffee": "http://example.org/coffee-machine#"
+    }
+  ],
+  "@type": [
+    "tm:ThingModel",
+    "coffee:HydraulicSubsystem"
+  ],
+  "title": "Гідравлічна підсистема кавомашини",
+  "version": {
+    "model": "1.0.0"
+  },
+  "properties": {
+    "pressure": {
+      "title": "Тиск",
+      "type": "number",
+      "@type": "coffee:WaterPressure",
+      "unit": "qudt:BAR",
+      "minimum": 0,
+      "maximum": 12,
+      "observable": true
+    },
+    "flowRate": {
+      "title": "Витрата води",
+      "type": "number",
+      "@type": "coffee:FlowRate",
+      "unit": "qudt:MilliL-PER-SEC",
+      "minimum": 0,
+      "maximum": 5,
+      "observable": true
+    },
+    "waterLevel": {
+      "title": "Рівень води у резервуарі",
+      "type": "number",
+      "@type": "coffee:WaterLevel",
+      "unit": "qudt:PERCENT",
+      "minimum": 0,
+      "maximum": 100,
+      "observable": true
+    },
+    "pumpVibrationRms": {
+      "title": "Середньоквадратична вібрація помпи",
+      "type": "number",
+      "@type": "coffee:PumpVibrationRms",
+      "unit": "qudt:M-PER-SEC2",
+      "minimum": 0,
+      "maximum": 3,
+      "observable": true
+    }
+  }
+}

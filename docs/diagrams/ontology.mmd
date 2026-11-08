@@ -1,0 +1,41 @@
+flowchart TB
+    Asset["Asset"]
+    Sensor["Sensor"]
+    Observable["ObservableProperty"]
+    CoffeeMachine["CoffeeMachine"]
+    WaterTank["WaterTank"]
+    Pump["Pump"]
+    Heater["Heater"]
+    TempSensor["TemperatureSensor"]
+    PressureSensor["PressureSensor"]
+    Temperature["BoilerTemperature"]
+    Pressure["WaterPressure"]
+    CM["cm-001 : CoffeeMachine"]
+    Tank["water-tank-001 : WaterTank"]
+    PumpI["pump-001 : Pump"]
+    TS["temperature-sensor-001"]
+    PS["pressure-sensor-001"]
+    TQ["boiler-temperature-quantity"]
+    PQ["water-pressure-quantity"]
+
+    CoffeeMachine -.->|subClassOf| Asset
+    WaterTank -.->|subClassOf| Asset
+    Pump -.->|subClassOf| Asset
+    Heater -.->|subClassOf| Asset
+    TempSensor -.->|subClassOf| Sensor
+    PressureSensor -.->|subClassOf| Sensor
+    Temperature -.->|subClassOf| Observable
+    Pressure -.->|subClassOf| Observable
+    CM -->|hasPart| Tank
+    CM -.->|hasPart (виведено)| PumpI
+    CM -->|hasSensor| TS
+    CM -->|hasSensor| PS
+    TS -->|observes| TQ
+    PS -->|observes| PQ
+
+    classDef base fill:#dfeaf7,stroke:#4b6486,color:#122a45
+    classDef typ fill:#f5f8fb,stroke:#7b8ca5,color:#24374b
+    classDef inst fill:#e4f4e7,stroke:#437451,color:#183c23
+    class Asset,Sensor,Observable base
+    class CoffeeMachine,WaterTank,Pump,Heater,TempSensor,PressureSensor,Temperature,Pressure typ
+    class CM,Tank,PumpI,TS,PS,TQ,PQ inst

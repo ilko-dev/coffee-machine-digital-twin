@@ -1,0 +1,31 @@
+{
+  "@context": [
+    "https://www.w3.org/2022/wot/td/v1.1",
+    {
+      "qudt": "http://qudt.org/vocab/unit/",
+      "coffee": "http://example.org/coffee-machine#"
+    }
+  ],
+  "@type": [
+    "tm:ThingModel",
+    "coffee:OperationSubsystem"
+  ],
+  "title": "Експлуатаційний стан кавомашини",
+  "version": {
+    "model": "1.0.0"
+  },
+  "properties": {
+    "brewingActive": {
+      "title": "Приготування активне",
+      "type": "boolean",
+      "@type": "coffee:BrewingActive",
+      "observable": true
+    },
+    "waterTankPresent": {
+      "title": "Резервуар встановлено",
+      "type": "boolean",
+      "@type": "coffee:WaterTankPresent",
+      "observable": true
+    }
+  }
+}

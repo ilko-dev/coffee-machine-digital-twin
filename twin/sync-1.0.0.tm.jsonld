@@ -1,0 +1,29 @@
+{
+  "@context": [
+    "https://www.w3.org/2022/wot/td/v1.1",
+    {
+      "qudt": "http://qudt.org/vocab/unit/",
+      "coffee": "http://example.org/coffee-machine#"
+    }
+  ],
+  "@type": [
+    "tm:ThingModel",
+    "coffee:SynchronizationMetadata"
+  ],
+  "title": "Метадані синхронізації",
+  "version": {
+    "model": "1.0.0"
+  },
+  "properties": {
+    "seq": {
+      "title": "Послідовний номер повідомлення",
+      "type": "integer",
+      "minimum": 0
+    },
+    "ts": {
+      "title": "Час відліку (Unix timestamp, мс)",
+      "type": "integer",
+      "minimum": 0
+    }
+  }
+}
