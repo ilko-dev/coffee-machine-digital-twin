@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Кавомашина </title>
+  <style>
+    :root { color-scheme: dark; font-family: system-ui, -apple-system, Segoe UI, sans-serif; }
+    body { margin: 0; background: #0e1520; color: #eef2f7; }
+    main { max-width: 1040px; margin: 0 auto; padding: 32px 20px 56px; }
+    h1 { font-size: clamp(27px, 4vw, 40px); margin: 0 0 6px; letter-spacing: -.04em; }
+    .sub, .hint { color: #9baabd; }
+    .summary { display: flex; flex-wrap: wrap; gap: 14px; margin: 24px 0; }
+    .chip { border: 1px solid #314153; border-radius: 100px; padding: 8px 14px; background: #172231; font-size: 14px; }
+    .fresh { color: #87e2a2; } .late { color: #ffcf77; } .stale { color: #ff8e8e; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; }
+    .card { background: #182535; border: 1px solid #304052; border-radius: 16px; padding: 19px; min-height: 106px; }
+    .card .name { font-size: 14px; color: #b1bfce; }
+    .card .value { font-size: 32px; font-weight: 700; letter-spacing: -.03em; margin-top: 14px; }
+    .card .unit { font-size: 15px; font-weight: 400; color: #9baabd; }
+    .hint { margin-top: 28px; line-height: 1.55; font-size: 14px; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Цифровий двійник кавомашини</h1>
+  <p class="sub">Thing: <code id="thing">org.pzks:cm-001</code></p>
+  <section class="summary" aria-label="Статус телеметрії">
+    <div class="chip">Канал: <strong id="connection">Підключення…</strong></div>
+    <div class="chip">Давність даних: <strong id="age">—</strong></div>
+    <div class="chip">Номер повідомлення: <strong id="seq">—</strong></div>
+  </section>
+  <section class="grid" id="grid" aria-label="Показники кавомашини"></section>
+</main>
+<script>
+  "use strict";
+  const THING = "org.pzks:cm-001";
+  const SIGNALS = [
+    ["thermal", "temperature", "Температура бойлера", "°C"],
+    ["thermal", "heaterPower", "Потужність нагрівача", "Вт"],
+    ["hydraulics", "pressure", "Тиск води", "бар"],
+    ["hydraulics", "flowRate", "Витрата води", "мл/с"],
+    ["hydraulics", "waterLevel", "Рівень води", "%"],
+    ["hydraulics", "pumpVibrationRms", "Вібрація помпи (СКЗ)", "м/с²"],
+    ["operation", "brewingActive", "Приготування", ""],
+    ["operation", "waterTankPresent", "Резервуар встановлено", ""]
+  ];
+  const $ = id => document.getElementById(id);
+  const cached = {};
+  let sourceTs = 0;
+  let seq = 0;
+  let lastSseAt = 0;
+  let fetchPending = false;
+  $("thing").textContent = THING;
+
+  for (const [feature, prop, label, unit] of SIGNALS) {
+    const card = document.createElement("article");
+    card.className = "card";
+    const title = document.createElement("div");
+    title.className = "name";
+    title.textContent = label;
+    const value = document.createElement("div");
+    value.className = "value";
+    value.id = `${feature}-${prop}`;
+    value.textContent = "—";
+    const suffix = document.createElement("span");
+    suffix.className = "unit";
+    suffix.textContent = unit ? " " + unit : "";
+    card.append(title, value);
+    value.append(suffix);
+    $("grid").append(card);
+  }
+
+  function applyFeatures(features) {
+    for (const [feature, prop] of SIGNALS) {
+      const value = features?.[feature]?.properties?.[prop];
+      if (value !== undefined) cached[`${feature}-${prop}`] = value;
+    }
+    const sync = features?.sync?.properties;
+    if (Number.isFinite(sync?.ts)) sourceTs = sync.ts;
+    if (Number.isInteger(sync?.seq)) seq = sync.seq;
+  }
+
+  function render() {
+    for (const [feature, prop, _label, unit] of SIGNALS) {
+      const value = cached[`${feature}-${prop}`];
+      if (value === undefined) continue;
+      const numberOrText = typeof value === "boolean"
+        ? (prop === "brewingActive" ? (value ? "Активне" : "Неактивне") : (value ? "Так" : "Ні"))
+        : Number(value).toFixed(2);
+      const cell = $(`${feature}-${prop}`);
+      cell.firstChild.nodeValue = String(numberOrText);
+    }
+    $("seq").textContent = seq || "—";
+    const age = sourceTs ? Math.max(0, (Date.now() - sourceTs) / 1000) : null;
+    const ageLabel = $("age");
+    ageLabel.textContent = age === null ? "Немає даних" : `${age.toFixed(1)} с`;
+    ageLabel.className = age === null || age >= 10 ? "stale" : age >= 2 ? "late" : "fresh";
+  }
+
+  async function refresh() {
+    if (fetchPending) return;
+    fetchPending = true;
+    try {
+      const response = await fetch(`/api/2/things/${THING}`, { cache: "no-store" });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const thing = await response.json();
+      applyFeatures(thing.features || {});
+    } catch (error) {
+      console.warn("Не вдалося отримати стан Ditto:", error);
+      $("connection").textContent = "API недоступний";
+    } finally {
+      fetchPending = false;
+    }
+  }
+
+  const events = new EventSource(`/api/2/things?ids=${THING}&fields=thingId,features`);
+  events.onopen = () => { $("connection").textContent = "SSE підключено"; };
+  events.onmessage = event => {
+    try {
+      const data = JSON.parse(event.data);
+      if (data.thingId && data.thingId !== THING) return;
+      applyFeatures(data.features || {});
+      lastSseAt = Date.now();
+    } catch (error) { console.warn("Некоректне SSE повідомлення:", error); }
+  };
+  events.onerror = () => { $("connection").textContent = "SSE перепідключається"; };
+
+  refresh();
+  setInterval(render, 250);
+  setInterval(() => { if (!lastSseAt || Date.now() - lastSseAt > 5000) refresh(); }, 5000);
+</script>
+</body>
+</html>
