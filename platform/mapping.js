@@ -1,5 +1,3 @@
-// Домен DCE: повідомлення сенсора -> підмоделі Ditto.
-// Тема: coffee-machine/<name>/telemetry (напр. coffee-machine/cm-001/telemetry).
 function mapToDittoProtocolMsg(headers, textPayload, bytePayload, contentType) {
   var data = JSON.parse(textPayload);
   var parts = String(headers["mqtt.topic"]).split("/");

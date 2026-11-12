@@ -1,8 +1,5 @@
-"""Створення/оновлення підключення Mosquitto -> Ditto.
+"""Створення або оновлення MQTT-з’єднання Ditto."""
 
-Запуск із кореня репозиторію: python platform/connection.py
-Локальні демо-облікові дані Ditto DevOps можна змінити через env.
-"""
 import json
 import os
 from pathlib import Path

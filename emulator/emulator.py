@@ -1,18 +1,10 @@
-"""Емулятор кавомашини (ЛР2): MQTT -> Ditto.
-
-Публікує агрегований стан 8 сигналів з ЛР1 у
-coffee-machine/<name>/telemetry та зберігає кожне підтверджене
-брокером повідомлення в results/source.csv.
-
-Запуск із кореня репозиторію:
-    python emulator/emulator.py --rate 1 --count 10
-    python emulator/emulator.py --rate 1        # доки не натиснуто Ctrl+C
-"""
+"""Емулятор сенсорів кавомашини з публікацією MQTT QoS 1."""
 
 import argparse
 import csv
 import json
 import math
+import os
 import random
 import time
 from pathlib import Path
@@ -21,7 +13,7 @@ import paho.mqtt.client as mqtt
 
 BROKER = "127.0.0.1"
 PORT = 1883
-RESULTS = Path(__file__).resolve().parents[1] / "results"
+RESULTS = Path(os.getenv("LAB2_RESULTS_DIR", Path(__file__).resolve().parents[1] / "results"))
 FIELDNAMES = ["seq", "ts", "temp", "hp", "p", "flow", "level", "vib", "brew", "tank"]
 
 
@@ -30,7 +22,7 @@ def clamp(value: float, low: float, high: float) -> float:
 
 
 def sample(elapsed: float, level: float, randomizer: random.Random) -> dict:
-    """Знімок стану за 1 с: 10 підвідліків для швидких сенсорів.
+    """Знімок стану з 10 підвідліків швидких сенсорів.
 
     Перша 20-секундна фаза: прогрів; далі 15 с приготування,
     потім 15 с очікування, цикл повторюється.
@@ -48,7 +40,6 @@ def sample(elapsed: float, level: float, randomizer: random.Random) -> dict:
         flow_samples.append(clamp(randomizer.gauss(2.5 if brewing else 0, 0.08 if brewing else 0.01), 0, 5))
         vibration_samples.append(clamp(randomizer.gauss(1.15 if brewing else 0.04, 0.08 if brewing else 0.01), 0, 3))
 
-    # Для рівня води використовується останнє відоме значення між оновленнями.
     return {
         "temp": round(clamp(target_temp + randomizer.gauss(0, 0.15), 20, 100), 2),
         "hp": round(clamp((1350 if heating else 400 if brewing else 0) + randomizer.gauss(0, 8), 0, 1500), 1) if heating or brewing else 0.0,
@@ -94,7 +85,7 @@ def main() -> None:
             while args.count == 0 or sent < args.count:
                 elapsed = time.monotonic() - start
                 if elapsed - last_level_sample >= 10:
-                    # Власне вимірювання рівня води раз на 10 с (0,1 Гц).
+                    # Між вимірюваннями раз на 10 с передаємо останній рівень води.
                     last_level_sample = elapsed
                     water_level = clamp(water_level - (0.8 if 20 <= elapsed % 50 < 35 else 0), 0, 100)
                 payload = {"seq": sent + 1, "ts": int(time.time() * 1000), **sample(elapsed, water_level, randomizer)}
@@ -112,7 +103,7 @@ def main() -> None:
     finally:
         client.disconnect()
         client.loop_stop()
-        print(f"Опубліковано й записано у results/source.csv: {sent}", flush=True)
+        print(f"Опубліковано й записано у {RESULTS / 'source.csv'}: {sent}", flush=True)
 
 
 if __name__ == "__main__":

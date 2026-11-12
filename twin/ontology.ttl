@@ -7,7 +7,7 @@
 <http://example.org/coffee-machine> a owl:Ontology ;
     rdfs:label "Онтологія цифрового двійника кавомашини"@uk .
 
-# Незалежні верхньорівневі класи.
+# Взаємно неперетинні верхньорівневі класи.
 :Asset a owl:Class ; rdfs:label "Фізичний або функціональний актив"@uk .
 :Sensor a owl:Class ; rdfs:label "Датчик"@uk .
 :ObservableProperty a owl:Class ; rdfs:label "Спостережувана величина"@uk .
@@ -35,7 +35,6 @@
 :BrewingActive a owl:Class ; rdfs:subClassOf :ObservableProperty .
 :WaterTankPresent a owl:Class ; rdfs:subClassOf :ObservableProperty .
 
-# Object properties: зв'язки, які має виводити HermiT.
 :hasPart a owl:ObjectProperty, owl:TransitiveProperty ;
     rdfs:domain :Asset ; rdfs:range :Asset ;
     owl:inverseOf :partOf .
@@ -46,7 +45,6 @@
 :observes a owl:ObjectProperty ;
     rdfs:domain :Sensor ; rdfs:range :ObservableProperty .
 
-# Data properties.
 :serialNo a owl:DatatypeProperty ; rdfs:domain :Asset ; rdfs:range xsd:string .
 :samplingRate a owl:DatatypeProperty ; rdfs:domain :Sensor ; rdfs:range xsd:decimal .
 

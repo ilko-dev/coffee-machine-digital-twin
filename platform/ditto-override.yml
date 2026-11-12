@@ -1,4 +1,4 @@
-# Локальне доповнення до upstream Ditto (сам compose Ditto не редагувати)
+# Локальні порти та доступ Ditto до WoT-моделей.
 services:
   things:
     environment:
