@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
+  <title>Coffee Machine Digital Twin</title>
+
+  <style>
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+
+      font-family: system-ui, sans-serif;
+      background: #111;
+    }
+
+    #hud {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+
+      z-index: 10;
+
+      min-width: 330px;
+
+      padding: 12px 16px;
+
+      background: rgba(255, 255, 255, 0.92);
+
+      border-radius: 8px;
+
+      line-height: 1.5;
+    }
+
+    #hud h3 {
+      margin: 0 0 8px;
+    }
+
+    #vals {
+      margin: 8px 0;
+      border-collapse: collapse;
+    }
+
+    #vals td {
+      padding-right: 10px;
+    }
+
+    .stale {
+      color: #c62828;
+      font-weight: 600;
+    }
+
+    .secondary {
+      color: #555;
+      font-size: 13px;
+    }
+
+    #tile-controls {
+      margin-top: 8px;
+    }
+
+    #tile-controls button {
+      padding: 5px 10px;
+      margin-right: 5px;
+
+      border: 1px solid #aaa;
+      border-radius: 5px;
+
+      background: white;
+
+      cursor: pointer;
+    }
+
+    #tile-controls button.active {
+      background: #333;
+      color: white;
+    }
+  </style>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three":
+        "./node_modules/three/build/three.module.js",
+
+      "three/addons/":
+        "./node_modules/three/examples/jsm/",
+
+      "3d-tiles-renderer/three":
+        "./node_modules/3d-tiles-renderer/build/index.three.js"
+    }
+  }
+  </script>
+</head>
+
+<body>
+
+<div id="hud">
+
+  <h3>Coffee Machine Digital Twin</h3>
+
+  <div>
+    Thing:
+    <b id="thing">—</b>
+  </div>
+
+  <div>
+    Revision:
+    <span id="rev">—</span>
+  </div>
+
+  <div>
+    Data age:
+    <span id="age">—</span>
+  </div>
+
+  <div>
+    Bound:
+    <span id="bound">—</span>
+  </div>
+
+  <div id="connection">
+    Connecting...
+  </div>
+
+  <table id="vals"></table>
+
+  <hr>
+
+  <div id="distance">
+    Distance: —
+  </div>
+
+  <div id="lod">
+    LOD: —
+  </div>
+
+  <div id="stats">
+    Calls: — · Triangles: —
+  </div>
+
+  <div id="tile-stats">
+    Tiles: —
+  </div>
+
+  <div id="tile-controls">
+    <button id="error16">
+      ρmax = 16
+    </button>
+
+    <button id="error32">
+      ρmax = 32
+    </button>
+  </div>
+
+  <div class="secondary">
+    ЛКМ: обертання · колесо: масштаб
+  </div>
+
+</div>
+
+<script
+  type="module"
+  src="main.js">
+</script>
+
+</body>
+</html>

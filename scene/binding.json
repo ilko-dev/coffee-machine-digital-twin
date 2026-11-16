@@ -1,0 +1,34 @@
+{
+  "thing": "org.pzks:cm-001",
+  "unit": "machine-1",
+  "bindings": [
+    {
+      "node": "heater",
+      "feature": "thermal",
+      "property": "temperature",
+      "title": "Температура",
+      "unit": "°C",
+      "min": 20,
+      "max": 100
+    },
+    {
+      "node": "pump",
+      "feature": "hydraulics",
+      "property": "pumpVibrationRms",
+      "title": "Вібрація насоса",
+      "unit": "m/s²",
+      "min": 0,
+      "max": 3
+    },
+    {
+      "node": "water-tank",
+      "feature": "hydraulics",
+      "property": "waterLevel",
+      "title": "Рівень води",
+      "unit": "%",
+      "min": 0,
+      "max": 100,
+      "invert": true
+    }
+  ]
+}
