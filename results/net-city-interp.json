@@ -1,0 +1,12 @@
+{
+  "type": "report",
+  "profile": "city",
+  "mode": "interp",
+  "d_int_ms": 105,
+  "rtt_p50_ms": 35,
+  "delay_p50_ms": 166,
+  "delay_p95_ms": 182,
+  "off_max_m": 0.002,
+  "starved_pct": 0,
+  "frames": 3592
+}

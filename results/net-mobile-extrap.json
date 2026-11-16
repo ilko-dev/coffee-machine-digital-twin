@@ -1,0 +1,12 @@
+{
+  "type": "report",
+  "profile": "mobile",
+  "mode": "extrap",
+  "d_int_ms": 0,
+  "rtt_p50_ms": 106,
+  "delay_p50_ms": 74,
+  "delay_p95_ms": 136,
+  "off_max_m": 8.983,
+  "starved_pct": 100,
+  "frames": 3592
+}

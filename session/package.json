@@ -1,0 +1,14 @@
+{
+  "name": "session",
+  "version": "1.0.0",
+  "description": "Сервер спільної 3D-сцени",
+  "scripts": {
+    "start": "node server.js",
+    "bot": "node bot.js"
+  },
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "ws": "8.22.1"
+  }
+}

@@ -2,6 +2,28 @@
 
 ЛР1 описує архітектуру платформи, вимоги й модель SysML v2. ЛР2 реалізує локальний стенд для двійника `org.pzks:cm-001`, перевіряє узгодженість стану та вимірює затримку під навантаженням.
 
+## ЛР3. 3D-сцена та спільний сеанс
+
+Запустіть стенд і підготуйте двійник, як у ЛР2. Потім із кореня репозиторію встановіть залежності й згенеруйте тайли:
+
+```powershell
+npm --prefix scene ci
+npm --prefix scene run tiles
+npm --prefix session ci
+docker compose -f platform/docker-compose.yml up -d
+```
+
+У терміналі з активною `.venv` запустіть емулятор. Окремий каталог зберігає вихідні дані ЛР2.
+
+```powershell
+$env:LAB2_RESULTS_DIR = Join-Path $env:TEMP ("coffee-lab3-" + (Get-Date -Format yyyyMMdd-HHmmss))
+python emulator/emulator.py --rate 1
+```
+
+Відкрийте [3D-сцену](http://localhost:8090/scene/). Для спільного сеансу запустіть `npm --prefix session start` і `npm --prefix session run bot` у різних терміналах. Відкрийте два вікна сцени з параметрами `?name=engineer` і `?name=expert&profile=mobile`.
+
+Звіти: [сцена](docs/scene.md), [продуктивність](docs/performance.md), [спільний сеанс](docs/multiuser.md).
+
 ## ЛР2. Локальний стенд і перевірки
 
 1. [Розгорніть стенд](docs/platform.md#розгортання-платформи) з Eclipse Ditto, Mosquitto, InfluxDB і Grafana.
